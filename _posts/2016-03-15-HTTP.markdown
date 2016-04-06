@@ -5,8 +5,6 @@ date: 2016-03-15 23:32:54
 tags: 网络
 ---
 
-#HTTP学习总结
-
 HTTP协议和TCP/IP协议作用相同，都是用于客户端和服务器之间的通信。
 在用于HTTP协议时，必然有一端担任客户端，另一端担任服务器端角色。而且两者的角色随时可能互换------从一条通信线路来说，服务端和客户端的角色是确定的。
 和HTTP关系密切的协议：[TCP/IP](http://baike.baidu.com/link?url=6XiP08Nh9e6aRtRbI6jPMvx1Vn1wy9jYB5th2qj0EcgugRwnrdZaFEqE_viarropjOzbZ_WOV7A6QQzW8sal6YsLFID7ScDtrmSGcRyUpijvsq7qihRy0iSq_NIEKdy-q1SZASIck6jgzB9e0Jsyy_)和DNS:见下图
