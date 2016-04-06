@@ -1,0 +1,50 @@
+# Basic
+title: 伯言连营
+#subtitle: 上善若水，人淡如菊
+#welcome_message: <a href="http://swifter.tips" target="_blank">Swifter.tips - 我维护的 Swift 使用技巧分享网站，每周三更新，欢迎访问</a>
+description: 我是张立池，一个iOS开发者，正在成长，欢迎指教。
+#creator: <a href="http://onev.cat">@onevcat</a>
+
+url: "http://zhanglichi.com"
+
+permalink: /:year/:month/:title/
+
+# Format
+highlighter: plain
+markdown: redcarpet
+redcarpet:
+  extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "strikethrough", "superscript", tables]
+
+# supported colors: blue, green, purple, red, orange or slate. If you need clear, leave it empty.
+cover_color: blue
+
+blog_button:
+    title: 博客
+    description: 访问博客
+
+#nav:
+ #   - {title: 项目, description: 我的项目, url: 'http://project.onevcat.com'}
+#    - {title: 关于, description: 了解更多关于我, url: 'http://about.onevcat.com/'}
+#    - {title: 订阅, description: 邮件订阅本站, url: '//store.objccn.io/subscribe'}
+
+# Pagination
+gems: [jekyll-paginate]
+paginate: 10
+paginate_path: "page/:num/"
+
+# Comment
+comment:
+#    disqus: onevcat
+     duoshuo: zhanglichi
+# Social
+social:
+    weibo: 伯言连营
+    github: zhanglichi
+#    twitter: onevcat
+#    gplus: 107108267983477358170
+    mail: zhanglichi1991@163.com
+
+# Google Analytics
+#ga:
+#    id: UA-25719337-1
+#    host: onevcat.com

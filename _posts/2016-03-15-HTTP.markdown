@@ -1,0 +1,114 @@
+---
+layout: post
+title: HTTP学习总结
+date: 2016-03-15 23:32:54
+tags: 网络
+---
+
+#HTTP学习总结
+
+HTTP协议和TCP/IP协议作用相同，都是用于客户端和服务器之间的通信。
+在用于HTTP协议时，必然有一端担任客户端，另一端担任服务器端角色。而且两者的角色随时可能互换------从一条通信线路来说，服务端和客户端的角色是确定的。
+和HTTP关系密切的协议：[TCP/IP](http://baike.baidu.com/link?url=6XiP08Nh9e6aRtRbI6jPMvx1Vn1wy9jYB5th2qj0EcgugRwnrdZaFEqE_viarropjOzbZ_WOV7A6QQzW8sal6YsLFID7ScDtrmSGcRyUpijvsq7qihRy0iSq_NIEKdy-q1SZASIck6jgzB9e0Jsyy_)和DNS:见下图
+```sequence
+发送端->DNS端: 把它的IP地址告诉我吧 
+DNS端->发送端:它的地址是192.168.XXX.XXX
+发送端->服务器端:像192.168.XXX.XXX发送访问请求
+```	
+1. 首先客户端想访问http://www.xxx.com。
+2. 客户端向NDS解析说：告诉我http://www.xxx.com的IP地址吧
+3. NDS告诉客户端：http://www.xxx.com的IP地址是192.168.xxx.xxx
+4. 客户端使用HTTP协议的职责，生成对服务器端的HTTP请求报文
+5. 客户端使用TCP协议，将HTTP请求报文分割成报文段，按序号分为多个报文段，并且把每个报文段传给对方
+6. 客户端利用IP协议，搜索到对方的地址，一遍中转，一边传送
+7. 服务器端使用TCP协议，将从对方那里接收到的报文段以原来的顺序重组请求报文
+8. 服务器端利用HTTP协议，对请求内容进行处理
+9. 然后处理的结果再用同样的过程进行回传
+
+##HTTP中可使用的几种方法：
+
+* **GET:获取资源**
+* **POST：传输实体主体**
+	GET方法也可以传输实体，但是一般不用GET方法进行传输，而是用POST方法，虽然说POST与GET相似，但是POST主要目的不是为了获取响应的主体内容。
+* **PUT传输文件**
+	PUT方法用来传输文件，就像FTP协议的文件上传一样，要求在请求保温的主体中包含文件内容，然后保存到请求URI指定的位置。
+* **HEAD:获取报文首部**
+	HEAD方法和GET方法一样，只是不返回报文主体部分。用于确认URI的有效性及资源更新的日期时间。
+* **DELETE:删除文件**
+	DELETE方法用来删除文件，是与PUT相反的方法。DELETE方法按请求URL删除指定的资源。
+* **OPTIONS：询问支持的方法**
+	OPTIONS方法用来查询针对请求URI指定的资源支持的方法
+* **TRACE：追踪路径**
+	TRACE方法是让服务器端将之前的请求通信环回给客户端的方法。
+* **CONNECT：要求用隧道协议连接代理**
+	CONNECT方法要求在与代理服务器通信时建立隧道，实现用隧道协议进行TCP通信。主要使用SSL和TLS协议把通信内容加密后经网络隧道传输。
+| 方法     |    说明 |
+| :------- | --------:|
+| GET      | 获取资源 |
+| POST     | 传输实体主体 |
+| PUT      | 传输文件 |
+| HEAD     | 获得报文首部 |
+| DELETE   | 删除文件 |
+| OPTIONS  | 询问支持的方法 |
+| TRACE	   | 追踪路径 |
+| CONNECT  | TRACE |
+| LINK     | 建立和资源之间的连接|
+| UNLINK   | 断开连接关系 |
+###HTTP历程
+HTTP协议的初始版本中，每进行一次HTTP通信就要断开一次TCP连接。这样会造成无谓的TCP连接建立和断开，增加通信量的开销。
+后来为了解决上述问题，想出了持久连接------只要任意一端没有明确提出断开连接，则保持TCP连接状态------而且持久连接使得多数请求以管线化方法成为可能。
+###使用cookie的状态管理
+HTTP是无状态协议，它不对之前发生过的请求和响应的状态进行管理。也就是说，无法根据之前的状态进行本次的请求处理，而且让客户端管理全部客户端状态则会成为负担。保留无状态协议这个特征的同时又要解决类似的问题，于是引入了cookie技术------通过在请求和响应报文中写入cookie信息来控制客户端的状态。
+* 没有cookie信息状态下的请求
+
+```sequence
+客户端->服务端: 请求
+Note right of 服务端: 生成cookie，并记录信息 
+服务端->客户端: 在响应中添加cookie后返回
+```	
+* 第二次有cookie后请求
+
+```sequence
+客户端->服务端: 请求中添加cookie方法
+Note right of 服务端: 检查cookie
+服务端->客户端: 响应
+```	
+HTTP请求报文和响应报文的内容如下：
+1. 请求报文（没有cookie信息的状态）
+```
+GET /reader/ HTTP/1.1
+Host: hackr.jp
+```
+2. 响应报文（服务器生成cookie信息）
+```
+HTTP/1.1 200OK
+Date: Thu, 12 Jul 2012 07:12:20 GMT
+Server: Apache
+<set-cookie: sid=1342077140226724;path=/;expires=Web,=>10-Oct-12 07:12:20 GMT>
+Contect-Type: text/plain: charset:UTF-8
+```
+3. 请求报文（自动发送保存着的cookie信息）
+```
+GET /image/ HTTP/1.1
+Host:hackr.jp
+Cookie:aid=1342077140226724
+```
+
+###返回结果的HTTP状态码
+
+|  状态码   | 类别 |    原因短语 |
+| :------- |      |--------:|
+| 1XX      | Informational(信息性状态码) | 接收的请求正在处理|
+| 2XX      | Success（成功状态码）| 请求正常处理完毕 |
+| 3XX      | Redirection（重定向状态码） | 需要进行附加操作以完成请求 |
+| 4XX      | Client Error（客户端错误状态码）| 服务器无法处理请求 |
+| 5XX      | Server Error（服务器错误状态码）| 服务器处理请求出错 |
+
+###HTTP首部
+
+首部字段这里不做多描述，详见[链接](http://www.cnblogs.com/kissdodog/archive/2013/04/01/2993228.html)
+
+###与HTTP协作的服务器
+* 用单个虚拟主机实现多个域名
+* 通信数据转发程序：代理、网关、隧道
+	1. 代理服务器的功能是代理网络用户去取得网络信息。主要功能是利用缓存技术保存在代理服务器上，当代理再次接受到相同资源的请求时，就可以不从源服务器哪里获取资源，而是将之前缓存的资源作为响应返回。
